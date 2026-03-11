@@ -1,0 +1,45 @@
+{
+  "skill_name": "laravel-dockerization",
+  "evals": [
+    {
+      "id": 1,
+      "name": "basic-laravel-8-php74",
+      "prompt": "I need to dockerize this Laravel project. It's Laravel 8 with PHP 7.4. I want both development and production environments set up with hot reloading in dev. Also need MySQL, Redis, and phpMyAdmin. Can you create all the Docker files, docker-compose, Makefile with multiarch builds, and get it running?",
+      "expected_output": "Complete Docker setup with Dockerfile.dev, Dockerfile.prod, docker-compose.yml, docker-compose.prod.yml, Makefile (with multiarch support), nginx.conf, .dockerignore, entrypoint scripts, .env.docker template, and documentation. Should detect PHP 7.4 and Laravel 8 from composer.json.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "laravel-10-with-nodejs-backend",
+      "prompt": "Hey, I've got a Laravel 10 app with PHP 8.2, and it has a separate Node.js backend that needs to run alongside it (there's a nodejs_backend directory with its own package.json). Need to dockerize the whole thing - both dev and production setups. Make sure the Node.js service stays running in the container. Also want the usual stuff: MySQL, Redis, and tooling for development.",
+      "expected_output": "Docker setup with Node.js runtime support, including configurations for running Node.js backend service. Should detect nodejs_backend directory and configure it as a runtime service, not just build-time. Dockerfiles should include Node.js in both build and runtime stages for production.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "laravel-9-assets-only-nodejs",
+      "prompt": "I want to containerize my Laravel 9 project. It uses Laravel Mix for frontend assets (there's a package.json with webpack.mix.js), but Node.js is only needed for building assets, not at runtime. PHP version is 8.1. Can you set up Docker with dev/prod environments and include Mailhog for email testing?",
+      "expected_output": "Docker setup where Node.js is only in the build stage of production Dockerfile, not in runtime. Development should mount source for hot module replacement. Should detect that Node.js is build-time only from package.json analysis.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "pure-laravel-no-nodejs",
+      "prompt": "I have a pure Laravel 11 API project with PHP 8.3. There's no frontend, no Node.js, no package.json - just a backend API. Can you dockerize it with MySQL and Redis? I need both dev and production configs, and a Makefile to manage everything.",
+      "expected_output": "Docker setup without any Node.js components. Should handle the absence of package.json gracefully. Dockerfiles should be optimized for PHP-only workloads. All services (MySQL, Redis, app, nginx) should be configured correctly without any Node.js dependencies.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 5,
+      "name": "full-integration-test",
+      "prompt": "Dockerize this Laravel 10 project with PHP 8.2. After creating all the Docker configs, please actually build the images and start the containers to verify everything works. I want to make sure all services (app, nginx, database, redis) come up healthy and Laravel can connect to the database. Also run 'php artisan --version' inside the container to confirm Laravel is working.",
+      "expected_output": "Complete Docker setup that is actually tested by building images and starting containers. Should verify: 1) All Docker files are generated, 2) docker-compose build succeeds, 3) docker-compose up succeeds, 4) All containers are running and healthy, 5) Laravel artisan commands work inside container, 6) Database connection is established. Should provide logs or evidence that services are running correctly.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

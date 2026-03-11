@@ -1,0 +1,93 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE and editors
+.idea
+.vscode
+.vs
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Laravel specific
+/storage/*.key
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+!/storage/logs/.gitkeep
+!/storage/framework/cache/.gitkeep
+!/storage/framework/sessions/.gitkeep
+!/storage/framework/views/.gitkeep
+
+# Dependencies (will be installed in container)
+/vendor/
+node_modules/
+bower_components/
+
+# Build artifacts
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+.npm
+.yarn
+.pnpm-debug.log
+
+# Environment files (use .env.docker instead)
+.env
+.env.backup
+.env.local
+.env.*.local
+.env.production
+.env.staging
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+CONTRIBUTING.md
+docs/
+
+# Tests
+tests/
+.phpunit.result.cache
+phpunit.xml
+.php_cs.cache
+.php-cs-fixer.cache
+
+# Docker files (no need to copy into image)
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# Misc
+*.log
+*.sql
+*.sqlite
+.phpunit.cache
+coverage/
+.coverage
+htmlcov/
+
+# Build directories
+dist/
+build/
+public/hot
+public/storage
+public/mix-manifest.json
+public/css
+public/js
+
+# Cache
+.cache
+.sass-cache
+.parcel-cache
+.next
+.nuxt

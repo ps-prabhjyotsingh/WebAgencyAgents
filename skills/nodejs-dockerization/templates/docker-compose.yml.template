@@ -1,0 +1,102 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: {{PROJECT_NAME}}-app
+    restart: unless-stopped
+    volumes:
+      - .:/app
+      - node_modules_data:/app/node_modules
+    ports:
+      - "${APP_PORT:-3000}:{{APP_PORT}}"
+    environment:
+      - NODE_ENV=development
+      - PORT={{APP_PORT}}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+    networks:
+      - {{PROJECT_NAME}}-network
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:{{APP_PORT}}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  {{POSTGRES_SECTION_START}}
+  db:
+    image: postgres:16-alpine
+    container_name: {{PROJECT_NAME}}-db
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-{{PROJECT_NAME}}}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - {{PROJECT_NAME}}-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+  {{POSTGRES_SECTION_END}}
+
+  {{MYSQL_SECTION_START}}
+  db:
+    image: mysql:8.0
+    container_name: {{PROJECT_NAME}}-db
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_DATABASE: ${DB_DATABASE:-{{PROJECT_NAME}}}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - {{PROJECT_NAME}}-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  {{MYSQL_SECTION_END}}
+
+  {{REDIS_SECTION_START}}
+  redis:
+    image: redis:7-alpine
+    container_name: {{PROJECT_NAME}}-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - {{PROJECT_NAME}}-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  {{REDIS_SECTION_END}}
+
+networks:
+  {{PROJECT_NAME}}-network:
+    driver: bridge
+
+volumes:
+  db_data:
+  node_modules_data:
+  {{REDIS_SECTION_START}}
+  redis_data:
+  {{REDIS_SECTION_END}}

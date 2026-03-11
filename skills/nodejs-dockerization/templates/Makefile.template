@@ -1,0 +1,76 @@
+# Makefile for {{PROJECT_NAME}}
+
+.PHONY: help up down build build-prod stop restart clean logs shell test
+
+PROJECT_NAME={{PROJECT_NAME}}
+REGISTRY={{REGISTRY}}
+TAG?=latest
+PLATFORMS=linux/amd64,linux/arm64
+
+help:
+	@echo "Usage: make <target>"
+	@echo ""
+	@echo "Development:"
+	@echo "  up           Start development environment"
+	@echo "  down         Stop all containers"
+	@echo "  build        Build development image"
+	@echo "  restart      Restart all containers"
+	@echo "  logs         Follow container logs"
+	@echo "  shell        Access app container shell"
+	@echo "  test         Run tests"
+	@echo ""
+	@echo "Production:"
+	@echo "  build-prod   Build production image (multiarch)"
+	@echo "  build-local  Build production image (local arch)"
+	@echo "  run-prod     Start production environment"
+	@echo "  push         Push image to registry"
+
+up:
+	docker compose up -d
+	@echo "Development environment started at http://localhost:$${APP_PORT:-3000}"
+
+down:
+	docker compose down
+
+build:
+	docker compose build app
+
+restart:
+	docker compose restart
+
+stop: down
+
+clean:
+	docker compose down -v
+
+logs:
+	docker compose logs -f
+
+shell:
+	docker compose exec app sh
+
+test:
+	docker compose exec app npm test
+
+build-prod:
+	docker buildx create --use --name $(PROJECT_NAME)-builder 2>/dev/null || docker buildx use $(PROJECT_NAME)-builder
+	docker buildx build --platform $(PLATFORMS) --file Dockerfile.prod \
+		--tag $(REGISTRY)/$(PROJECT_NAME):$(TAG) --tag $(REGISTRY)/$(PROJECT_NAME):latest --push .
+
+build-local:
+	docker build -f Dockerfile.prod -t $(REGISTRY)/$(PROJECT_NAME):$(TAG) .
+
+run-prod:
+	docker compose -f docker-compose.prod.yml up -d
+
+push:
+	docker push $(REGISTRY)/$(PROJECT_NAME):$(TAG)
+	docker push $(REGISTRY)/$(PROJECT_NAME):latest
+
+init:
+	@test -f .env || cp .env.example .env && echo ".env created"
+	docker compose build
+	docker compose up -d
+	@echo "Waiting for services..."
+	@sleep 10
+	@echo "Done! Access at http://localhost:$${APP_PORT:-3000}"

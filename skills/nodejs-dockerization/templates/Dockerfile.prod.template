@@ -1,0 +1,45 @@
+# Production Dockerfile for Node.js (Multi-stage)
+
+# Stage 1: Build
+FROM node:{{NODE_VERSION}}-alpine AS builder
+
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+COPY . .
+
+{{TYPESCRIPT_BUILD_START}}
+RUN npm run build
+{{TYPESCRIPT_BUILD_END}}
+
+# Remove devDependencies
+RUN npm prune --production
+
+# Stage 2: Production Runtime
+FROM node:{{NODE_VERSION}}-alpine AS production
+
+WORKDIR /app
+
+RUN apk add --no-cache curl tini
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+COPY --from=builder --chown=appuser:appgroup /app/node_modules ./node_modules
+COPY --from=builder --chown=appuser:appgroup /app/package.json ./
+{{TYPESCRIPT_BUILD_START}}
+COPY --from=builder --chown=appuser:appgroup /app/dist ./dist
+{{TYPESCRIPT_BUILD_END}}
+COPY --from=builder --chown=appuser:appgroup /app/src ./src
+
+ENV NODE_ENV=production
+
+EXPOSE {{APP_PORT}}
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:{{APP_PORT}}/health || exit 1
+
+USER appuser
+
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD {{START_CMD}}

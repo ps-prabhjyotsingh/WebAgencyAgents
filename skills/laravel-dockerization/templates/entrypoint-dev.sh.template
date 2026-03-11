@@ -1,0 +1,64 @@
+#!/bin/bash
+set -e
+
+echo "Starting {{PROJECT_NAME}} (Development)..."
+
+# Wait for database
+echo "Waiting for database..."
+retries=0
+until nc -z db 3306 || [ $retries -ge 30 ]; do
+  sleep 2
+  retries=$((retries + 1))
+done
+if [ $retries -ge 30 ]; then
+  echo "ERROR: Database connection timeout after 60s"
+  exit 1
+fi
+echo "Database is up."
+
+# Wait for Redis
+until nc -z redis 6379; do sleep 1; done
+echo "Redis is up."
+
+cd /var/www/html
+
+# Install PHP deps only if vendor is missing or lock file changed
+if [ ! -d vendor ] || [ composer.lock -nt vendor/autoload.php ]; then
+    echo "Installing Composer dependencies..."
+    composer install --no-interaction --prefer-dist --optimize-autoloader
+fi
+
+{{NODE_SECTION_START}}
+# Install Node deps if needed
+if [ -f package.json ] && { [ ! -d node_modules ] || [ package-lock.json -nt node_modules/.package-lock.json ]; }; then
+    echo "Installing npm dependencies..."
+    npm install --silent
+fi
+{{NODE_SECTION_END}}
+
+# Generate APP_KEY if not set
+if [ -f .env ] && ! grep -q "APP_KEY=base64:" .env 2>/dev/null; then
+    echo "Generating application key..."
+    php artisan key:generate --force
+fi
+
+# Run migrations
+echo "Running migrations..."
+php artisan migrate --force 2>/dev/null || echo "Migration failed or no migrations to run."
+
+# Storage link
+if [ ! -L public/storage ]; then
+    php artisan storage:link 2>/dev/null || true
+fi
+
+# Fix permissions on writable dirs only
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+
+# Ensure php-fpm run dir exists
+mkdir -p /run/php
+chown www-data:www-data /run/php
+
+echo "{{PROJECT_NAME}} ready at http://localhost:${NGINX_PORT:-8080}"
+
+exec "$@"

@@ -1,0 +1,81 @@
+# Development Dockerfile for Laravel
+# PHP Version: {{PHP_VERSION}}
+
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+
+WORKDIR /var/www/html
+
+# Add PHP repository and install system deps in one layer
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    ca-certificates \
+    && LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php \
+    && apt-get update \
+    && apt-get install -y \
+    php{{PHP_VERSION}}-fpm \
+    php{{PHP_VERSION}}-cli \
+    php{{PHP_VERSION}}-common \
+    php{{PHP_VERSION}}-mysql \
+    php{{PHP_VERSION}}-pgsql \
+    php{{PHP_VERSION}}-zip \
+    php{{PHP_VERSION}}-gd \
+    php{{PHP_VERSION}}-mbstring \
+    php{{PHP_VERSION}}-curl \
+    php{{PHP_VERSION}}-xml \
+    php{{PHP_VERSION}}-bcmath \
+    php{{PHP_VERSION}}-intl \
+    php{{PHP_VERSION}}-redis \
+    git \
+    unzip \
+    curl \
+    netcat-openbsd \
+    && rm -rf /var/lib/apt/lists/*
+
+{{NODE_SECTION_START}}
+# Install Node.js {{NODE_VERSION}}
+RUN curl -fsSL https://deb.nodesource.com/setup_{{NODE_VERSION}}.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+{{NODE_SECTION_END}}
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Configure PHP-FPM to listen on port 9000 and enable ping
+RUN sed -i 's|listen = /run/php/php{{PHP_VERSION}}-fpm.sock|listen = 9000|' /etc/php/{{PHP_VERSION}}/fpm/pool.d/www.conf \
+    && echo 'ping.path = /ping' >> /etc/php/{{PHP_VERSION}}/fpm/pool.d/www.conf \
+    && echo 'pm.status_path = /status' >> /etc/php/{{PHP_VERSION}}/fpm/pool.d/www.conf \
+    && mkdir -p /run/php \
+    && chown www-data:www-data /run/php
+
+# Development PHP settings
+RUN { \
+    echo 'display_errors = On'; \
+    echo 'display_startup_errors = On'; \
+    echo 'error_reporting = E_ALL'; \
+    echo 'memory_limit = 512M'; \
+    echo 'upload_max_filesize = 50M'; \
+    echo 'post_max_size = 50M'; \
+    } >> /etc/php/{{PHP_VERSION}}/fpm/php.ini
+
+# Create necessary directories
+RUN mkdir -p storage/framework/{cache,sessions,views} \
+    storage/logs \
+    bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage bootstrap/cache
+
+# Copy entrypoint script
+COPY docker/scripts/entrypoint-dev.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+EXPOSE 9000{{NODE_PORT_EXPOSE}}
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD nc -z localhost 9000 || exit 1
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["php-fpm{{PHP_VERSION}}", "--nodaemonize"]

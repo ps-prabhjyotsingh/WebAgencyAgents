@@ -1,0 +1,17 @@
+# React Frontend Dockerfile
+# For use with Laravel API + React frontend dual-service setup
+
+FROM node:{{NODE_VERSION}}-alpine
+
+WORKDIR /app
+
+# Install deps first for caching
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+COPY . .
+
+EXPOSE 5173
+
+# Vite dev server with HMR — bind to 0.0.0.0 for Docker
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

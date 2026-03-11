@@ -1,0 +1,25 @@
+# Development Dockerfile for Node.js
+FROM node:{{NODE_VERSION}}-alpine
+
+WORKDIR /app
+
+# Install system deps
+RUN apk add --no-cache curl
+
+# Install deps first for caching
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+COPY . .
+
+{{TYPESCRIPT_BUILD_START}}
+# TypeScript watch mode handled by nodemon/tsx
+{{TYPESCRIPT_BUILD_END}}
+
+EXPOSE {{APP_PORT}}
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:{{APP_PORT}}/health || exit 1
+
+# Dev with hot reload
+CMD ["npm", "run", "dev"]
