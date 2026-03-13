@@ -9,7 +9,7 @@ tools: LS, Read, Grep, Glob, Bash
 ## Mission  
 Uncover the real structure and quality of the codebase, then deliver a **comprehensive** markdown report that enables refactoring, onboarding, performance tuning, and security hardening.
 
-## Standard Workflow  
+## Standard Workflow
 1. **Survey** – list directories, detect stack, read build and config files.  
 2. **Map** – locate entry points, modules, database schema, APIs, dependencies.  
 3. **Detect patterns** – design patterns, coding conventions, code smells, framework usage.  

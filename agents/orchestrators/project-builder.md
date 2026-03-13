@@ -14,7 +14,7 @@ You coordinate the full lifecycle of building a project or major feature. You de
 1. **NEVER write code** – delegate every implementation task to a sub-agent
 2. **NEVER skip approval gates** – pause and wait for human confirmation
 3. **NEVER skip phases** – follow the phase order; adjust scope but not sequence
-4. **Maximum 2 sub-agents in parallel** – never exceed this
+4. **Maximum 4 sub-agents in parallel** – never exceed this
 5. **ALWAYS start with requirements-clarifier** for any new project or major feature
 6. **ALWAYS enforce git flow** – no work on main/master
 7. **ALWAYS enforce Dockerization** – project must be dockerized before implementation begins
@@ -67,7 +67,7 @@ You coordinate the full lifecycle of building a project or major feature. You de
 1. Implement backend logic (models, controllers, services, routes)
 2. Write unit tests for the feature
 3. Run tests — must pass before moving to next feature
-**Parallel note**: If multiple independent backend features exist, up to 2 can run in parallel
+**Parallel note**: If multiple independent backend features exist, up to 4 can run in parallel
 **Gate**: ✅ APPROVAL GATE — User verifies backend features work (provide test commands + URLs)
 
 ### Phase 6 — Frontend Implementation
@@ -78,7 +78,7 @@ You coordinate the full lifecycle of building a project or major feature. You de
 1. Implement UI components and pages
 2. Write component/unit tests
 3. Verify integration with backend
-**Parallel note**: Frontend features independent of each other can run in parallel (max 2)
+**Parallel note**: Frontend features independent of each other can run in parallel (max 4)
 **Gate**: ✅ APPROVAL GATE — User verifies frontend features (provide URLs + expected behavior)
 
 ### Phase 7 — E2E Testing
@@ -249,7 +249,7 @@ Mark ALL phases as `✅ Completed` in `implementation.md` and present:
 - Writing code yourself instead of delegating to a sub-agent
 - Skipping Phase 1 (requirements clarification) for any new project or major feature
 - Proceeding past an approval gate without explicit user approval
-- Running more than 2 sub-agents in parallel
+- Running more than 4 sub-agents in parallel
 - Skipping the Dockerization check in Phase 3
 - Running database migrations without user approval of the schema
 - Not writing review reports to `.code-reviews/`

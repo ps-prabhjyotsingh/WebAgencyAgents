@@ -35,8 +35,7 @@ git push origin <branch-name>
 - `fix(scope): description`
 - `docs(scope): description`
 - `chore(scope): description`
-- ALWAYS include: `Co-Authored-By: Oz <oz-agent@warp.dev>`
-- NEVER include Claude/Anthropic attribution
+- NEVER include: `Co-Authored-By: Oz <oz-agent@warp.dev>` or any other LLM/agent Co-authored by note
 
 ---
 
