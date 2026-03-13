@@ -1,5 +1,46 @@
 # CLAUDE.md
 
+## ⚠️ CRITICAL: GIT FLOW RULES - READ THIS FIRST ⚠️
+
+**THESE RULES MUST BE FOLLOWED WITHOUT EXCEPTION:**
+
+### 🔴 NEVER COMMIT DIRECTLY TO MAIN/MASTER
+1. **ALWAYS** create a feature branch before any work: `git checkout -b feature/<description>`
+2. **NEVER** use `git commit` while on `main` or `master` branch
+3. **ALWAYS** verify current branch with `git branch` before making changes
+4. For bug fixes use: `fix/<description>`
+5. For releases use: `release/<version>`
+6. For hotfixes use: `hotfix/<description>`
+
+### 🔴 MANDATORY PRE-FLIGHT CHECKS (BEFORE ANY WORK)
+**Run these checks BEFORE starting ANY task:**
+```bash
+# 1. Check current branch - MUST NOT be main/master
+git branch --show-current
+
+# 2. If on main/master, CREATE FEATURE BRANCH IMMEDIATELY:
+if [[ $(git branch --show-current) == "main" ]] || [[ $(git branch --show-current) == "master" ]]; then
+  git checkout -b feature/<task-description>
+fi
+
+# 3. Check for git remote
+git remote -v
+
+# 4. Check if project is dockerized (REQUIRED before implementation)
+ls Dockerfile docker-compose.yml
+```
+
+### 🔴 COMMIT MESSAGE FORMAT (REQUIRED)
+- Use Conventional Commits: `feat(scope): description`, `fix(scope): description`, `docs(scope): description`
+- **ALWAYS** include co-author: `Co-Authored-By: Oz <oz-agent@warp.dev>`
+- **NEVER** include Claude/Anthropic attribution
+
+### 🔴 AFTER EVERY COMMIT
+- **ALWAYS** push to remote if configured: `git push origin <branch-name>`
+- **NEVER** push to main/master directly
+
+---
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
@@ -8,11 +49,15 @@ This is the Web Agency Agents repository - a collection of specialized AI agent 
 
 ## Working with Agents
 
+**⚠️ REMINDER: Before modifying ANY file, verify you are on a feature branch (NOT main/master)**
+
 When creating or modifying agents:
-1. Agents are Markdown files with YAML frontmatter
-2. Most agents should omit the `tools` field to inherit all available tools
-3. Use XML-style examples in descriptions for intelligent invocation
-4. Agents return structured findings for main agent coordination
+1. **First**: Run `git branch --show-current` to verify branch
+2. **If on main/master**: Create feature branch immediately with `git checkout -b feature/<description>`
+3. Agents are Markdown files with YAML frontmatter
+4. Most agents should omit the `tools` field to inherit all available tools
+5. Use XML-style examples in descriptions for intelligent invocation
+6. Agents return structured findings for main agent coordination
 
 ## Orchestration Pattern for Claude Code
 
@@ -320,32 +365,45 @@ Main Agent: "Based on the tech-lead's routing, I'll now coordinate the implement
 
 ## Project Development Standards
 
+**⚠️ CRITICAL REMINDER: These standards include the git flow rules from the top of this document. ALWAYS follow them.**
+
 All agents MUST follow these standards when working on any project. These apply universally regardless of framework.
 
 ### 1. Git Setup (Pre-Flight Check)
 
+**🔴 MANDATORY FIRST STEP - CHECK BRANCH:**
+```bash
+# ALWAYS run this BEFORE any work
+git branch --show-current
+
+# If output is "main" or "master" → CREATE FEATURE BRANCH IMMEDIATELY
+git checkout -b feature/<task-description>
+```
+
 Before any coding begins:
-1. Check if a git remote is configured: `git remote -v`
-2. If NO remote is found → **STOP** and ask the user:
+1. **🔴 VERIFY NOT ON MAIN/MASTER**: Run `git branch --show-current` - if on main/master, create feature branch immediately
+2. Check if a git remote is configured: `git remote -v`
+3. If NO remote is found → **STOP** and ask the user:
    > "No git remote is configured. Would you like to add one, or skip and work locally only?"
-3. If YES remote → proceed with git flow branching below.
-4. Always follow **git flow** branching:
-   - **NEVER** commit directly to `main` or `master`
+4. If YES remote → proceed with git flow branching below.
+5. Always follow **git flow** branching:
+   - **🔴 NEVER EVER commit directly to `main` or `master`** - This is the #1 rule
    - Feature work → `feature/<short-description>`
    - Bug fixes → `fix/<short-description>`
    - Releases → `release/<version>`
    - Hotfixes → `hotfix/<short-description>`
-5. All commit messages MUST follow Conventional Commits format:
+6. All commit messages MUST follow Conventional Commits format:
    - `feat(scope): short description`
    - `fix(scope): short description`
    - `docs(scope): short description`
    - `chore(scope): short description`
-6. **NEVER add Claude/Anthropic co-author attribution** in commit messages:
+7. **NEVER add Claude/Anthropic co-author attribution** in commit messages:
    - Do NOT include `Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>` or similar
    - Do NOT include any co-author line referencing Claude, Anthropic, or AI models
    - The only acceptable co-author line (if using Oz/Warp agents) is: `Co-Authored-By: Oz <oz-agent@warp.dev>`
    - When in doubt, omit co-author lines entirely
-7. After every commit, push to remote if one is configured.
+8. After every commit, push to remote if one is configured: `git push origin <branch-name>`
+9. **🔴 VERIFY BRANCH BEFORE PUSHING**: Always confirm you're NOT pushing to main/master
 
 ### 2. Dockerization Requirement
 
