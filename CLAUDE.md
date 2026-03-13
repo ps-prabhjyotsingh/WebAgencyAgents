@@ -8,6 +8,8 @@ A collection of 38 specialized AI agent prompts that extend any AI coding assist
 
 ## Working with Agents
 
+**⚠️ REMINDER: Before modifying ANY file, verify you are on a feature branch (NOT main/master)**
+
 When creating or modifying agents:
 1. Agents are Markdown files with YAML frontmatter
 2. Most agents should omit the `tools` field to inherit all available tools
