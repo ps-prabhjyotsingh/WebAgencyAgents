@@ -157,6 +157,187 @@ The @agent-team-configurator automatically sets up your perfect AI development t
 [Browse all agents →](agents/)
 
 
+## 📖 How to Use Web Agency Agents
+
+### Scenario 1: Building a Greenfield Project
+
+For new projects starting from scratch:
+
+**Step 1: Create Requirements Document**
+```bash
+# Create a requirements.md in your project root
+touch requirements.md
+```
+
+**Step 2: Clarify Requirements**
+```bash
+claude "use @requirements-clarifier to analyze requirements.md and ask clarifying questions"
+```
+The requirements-clarifier will:
+- Analyze your requirements.md
+- Ask clarifying questions about ambiguous points
+- Produce a phased execution plan
+- Wait for your approval
+
+**Step 3: Build the Project**
+```bash
+claude "use @project-builder to execute the clarified plan"
+```
+The project-builder will:
+- Orchestrate phased execution (setup → backend → frontend → integration)
+- Create feature branches following git flow (never commits to main/master)
+- Implement → unit test → code review for each phase
+- Write code review reports to `.code-reviews/` (add to .gitignore)
+- Request approval at each milestone
+- Push to remote after each phase (if git remote configured)
+
+**Step 4: Dockerize the Project**
+```bash
+# For Laravel projects
+claude "use the laravel-dockerization skill to set up Docker"
+
+# For Node.js projects  
+claude "use the nodejs-dockerization skill to set up Docker"
+```
+
+**Step 5: Add E2E Tests**
+```bash
+claude "use the playwright-testing skill to set up E2E tests"
+```
+
+### Scenario 2: Building a Feature in Existing Project
+
+For adding new functionality to an existing codebase:
+
+**Step 1: Configure AI Team (First Time Only)**
+```bash
+claude "use @agent-team-configurator to detect my stack and configure optimal agents"
+```
+This creates/updates CLAUDE.md with your tech stack and agent mappings.
+
+**Step 2: Verify Docker & Git Setup**
+```bash
+# Check if project is dockerized
+ls Dockerfile docker-compose.yml
+
+# Check git remote
+git remote -v
+
+# Ensure not on main/master
+git branch
+```
+
+**Step 3: Plan the Feature**
+```bash
+claude "use @agent-tech-lead-orchestrator to plan and coordinate building [feature description]"
+```
+The tech-lead will:
+- Analyze the feature requirements
+- Create an agent routing map (which specialists to use)
+- Return structured findings
+- Wait for your approval before execution
+
+**Step 4: Execute with Specialists**
+The main AI agent will invoke specialists based on tech-lead's routing:
+- Framework-specific agents (django-backend-expert, react-component-architect, etc.)
+- Universal agents as fallback (backend-developer, frontend-developer)
+- Always includes @agent-code-reviewer for quality assurance
+
+**Step 5: Code Review**
+```bash
+claude "use @agent-code-reviewer to review the implemented feature"
+```
+Reviewer performs:
+- Stage 1: Spec compliance review
+- Stage 2: Code quality review  
+- Writes reports to `.code-reviews/` (gitignored)
+- Tags issues by severity (CRITICAL, HIGH, MEDIUM, LOW, INFO)
+
+**Step 6: Finish the Branch**
+```bash
+claude "use @agent-branch-finisher to complete this feature branch"
+```
+Branch finisher will:
+- Verify all tests pass
+- Present completion options (merge, PR, continue work)
+- Execute your choice
+- Clean up if requested
+- Push to remote
+
+### Scenario 3: Fixing a Bug
+
+For debugging and fixing issues:
+
+**Step 1: Create Bug Fix Branch**
+```bash
+git checkout -b fix/bug-description
+```
+
+**Step 2: Systematic Debugging**
+```bash
+claude "use @agent-systematic-debugger to debug [describe the issue]"
+```
+The debugger follows 4 phases:
+- **Investigate**: Gather evidence, reproduce issue
+- **Analyse**: Examine code paths, identify patterns  
+- **Hypothesise**: Form theories about root cause
+- **Fix**: Implement solution with approval gate
+
+**Step 3: Write Tests**
+```bash
+claude "use @agent-testing-specialist to add tests for this bug fix"
+```
+Testing specialist:
+- Implements TDD (RED-GREEN-REFACTOR)
+- Supports PHPUnit/Pest, Jest/Vitest, Playwright E2E
+- Ensures bug cannot regress
+
+**Step 4: Code Review & Push**
+```bash
+claude "use @agent-code-reviewer to review the bug fix"
+claude "use @agent-branch-finisher to complete the fix branch"
+```
+
+### Scenario 4: Performance Optimization
+
+**Step 1: Analyze Performance**
+```bash
+claude "use @agent-performance-optimizer to identify bottlenecks"
+```
+Optimizer will:
+- Profile the application
+- Identify N+1 queries, slow endpoints, memory leaks
+- Provide optimization recommendations
+- Wait for approval
+
+**Step 2: Apply Optimizations**
+```bash
+claude "implement the approved optimizations from @agent-performance-optimizer"
+```
+
+**Step 3: Verify Improvements**
+```bash
+claude "benchmark the optimizations and compare before/after metrics"
+```
+
+### Scenario 5: Exploring Unknown Codebase
+
+**Step 1: Archaeological Survey**
+```bash
+claude "use @agent-code-archaeologist to explore and document this codebase"
+```
+Archaeologist will:
+- Map project structure
+- Identify patterns and conventions
+- Document architecture
+- Flag technical debt
+- Create docs/architecture.md
+
+**Step 2: Update Documentation**
+```bash
+claude "use @agent-documentation-specialist to create comprehensive docs"
+```
+
 ## 🔥 Why Teams Beat Solo AI
 
 - **Specialized Expertise**: Each agent masters their domain with deep, current knowledge
@@ -187,9 +368,6 @@ The @agent-team-configurator automatically sets up your perfect AI development t
 
 MIT License - Use freely in your projects!
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=ps-prabhjyotsingh/WebAgencyAgents&type=Date)](https://www.star-history.com/#ps-prabhjyotsingh/WebAgencyAgents&Date)
 ---
 
 <p align="center">
