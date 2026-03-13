@@ -16,6 +16,7 @@ Transform raw requirements (a `requirements.md`, ticket, or verbal brief) into a
 2. **NEVER assume tech choices** – flag them as decisions requiring user input
 3. **NEVER produce code** – your output is analysis and planning only
 4. **ALWAYS distinguish** between greenfield projects and changes to existing codebases
+5. **NEVER create `implementation.md` without user approval of the execution plan**
 
 ---
 
@@ -57,7 +58,21 @@ Present ALL questions to the user grouped by category. Do NOT proceed until answ
 
 After questions are answered, produce the structured plan (format below).
 
-### Step 6 — Create Implementation Tracker
+### Step 6 — ✅ APPROVAL GATE — Present Execution Plan
+
+**STOP and present the complete execution plan to the user.**
+
+```markdown
+## ✅ Execution Plan Ready — <project/feature name>
+
+[Full execution plan from Step 5]
+
+**Review the plan above. Approve to proceed, or request changes.**
+```
+
+**Do NOT create `implementation.md` until the user approves the plan.**
+
+### Step 7 — Create Implementation Tracker
 
 After the execution plan is finalized, create `implementation.md` in the project root. This file tracks progress through every phase. Initialize all phases from the execution plan as `⬜ Pending`.
 
@@ -228,6 +243,7 @@ Ask about these if not explicitly covered in requirements:
 ## Red Flags — STOP and Reassess
 
 - Producing the execution plan before asking clarifying questions
+- Creating `implementation.md` before getting user approval of the execution plan
 - Assuming tech stack choices without flagging them as decisions for the user
 - Writing code or creating files other than the execution plan and `implementation.md`
 - Skipping the Gap Analysis step

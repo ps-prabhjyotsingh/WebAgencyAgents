@@ -340,7 +340,12 @@ Before any coding begins:
    - `fix(scope): short description`
    - `docs(scope): short description`
    - `chore(scope): short description`
-6. After every commit, push to remote if one is configured.
+6. **NEVER add Claude/Anthropic co-author attribution** in commit messages:
+   - Do NOT include `Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>` or similar
+   - Do NOT include any co-author line referencing Claude, Anthropic, or AI models
+   - The only acceptable co-author line (if using Oz/Warp agents) is: `Co-Authored-By: Oz <oz-agent@warp.dev>`
+   - When in doubt, omit co-author lines entirely
+7. After every commit, push to remote if one is configured.
 
 ### 2. Dockerization Requirement
 
