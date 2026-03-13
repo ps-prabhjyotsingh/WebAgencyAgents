@@ -6,6 +6,21 @@
 
 **This project is experimental and token-intensive.** Multi-agent orchestration can consume 10-50k tokens per complex feature. Use with caution and monitor your usage.
 
+## 📜 **READ THIS FIRST: [AGENTS.md](AGENTS.md)**
+
+**Before using this repository, ALL users (human and AI) MUST read [AGENTS.md](AGENTS.md).** This file contains mandatory rules that apply to ALL platforms (Claude Code, Warp, Cursor, Windsurf, etc.):
+
+- 🔴 Git flow rules (NEVER commit to main/master)
+- 🔴 Pre-flight checks (Docker, branch verification)
+- 🔴 Approval gates (mandatory at key milestones)
+- 🔴 Testing requirements (TDD, code coverage)
+- 🔴 Code review process (mandatory for all features)
+- 🔴 Documentation requirements
+- 🔴 Agent orchestration patterns
+- 🔴 UI framework selection process
+
+**⚠️ Failure to follow these rules will result in broken workflows and incorrect implementations.**
+
 ## 🚀 Quick Start
 
 ### Prerequisites
