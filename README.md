@@ -1,4 +1,4 @@
-# Awesome Claude Agents - AI Development Team
+# Web Agency Agents - AI Development Team
 
 A collection of **38 specialized AI agent prompts** that work together as a coordinated development team. Each agent has deep domain expertise, structured handoffs, and mandatory human approval gates.
 
