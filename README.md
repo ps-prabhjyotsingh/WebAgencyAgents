@@ -28,7 +28,7 @@ A collection of **38 specialized AI agent prompts** that work together as a coor
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/ps-prabhjyotsingh/awesome-claude-agents.git
+git clone https://github.com/ps-prabhjyotsingh/WebAgencyAgents.git
 ```
 
 ---
@@ -44,19 +44,19 @@ Claude Code natively supports agent files in `~/.claude/agents/`.
 macOS/Linux:
 ```bash
 mkdir -p ~/.claude/agents
-ln -sf "$(pwd)/awesome-claude-agents/agents/" ~/.claude/agents/awesome-claude-agents
+ln -sf "$(pwd)/WebAgencyAgents/agents/" ~/.claude/agents/WebAgencyAgents
 ```
 
 Windows (PowerShell):
 ```powershell
 New-Item -Path "$env:USERPROFILE\.claude\agents" -ItemType Directory -Force
-cmd /c mklink /D "$env:USERPROFILE\.claude\agents\awesome-claude-agents" "$(Get-Location)\awesome-claude-agents\agents"
+cmd /c mklink /D "$env:USERPROFILE\.claude\agents\WebAgencyAgents" "$(Get-Location)\WebAgencyAgents\agents"
 ```
 
 **Option B: Copy (static)**
 ```bash
 mkdir -p ~/.claude/agents
-cp -r awesome-claude-agents/agents ~/.claude/agents/awesome-claude-agents
+cp -r WebAgencyAgents/agents ~/.claude/agents/WebAgencyAgents
 ```
 
 Verify:
@@ -77,8 +77,8 @@ Add agents as [Rules](https://docs.warp.dev/agents/rules):
 Add agents to `.cursor/rules/`:
 ```bash
 mkdir -p .cursor/rules
-cp awesome-claude-agents/agents/orchestrators/*.md .cursor/rules/
-cp awesome-claude-agents/agents/core/*.md .cursor/rules/
+cp WebAgencyAgents/agents/orchestrators/*.md .cursor/rules/
+cp WebAgencyAgents/agents/core/*.md .cursor/rules/
 # Add framework-specific agents as needed
 ```
 
@@ -399,14 +399,9 @@ tools: Read, Write, Edit, Bash, Grep, Glob, LS
 
 ## Community
 
-- [Report issues](https://github.com/ps-prabhjyotsingh/awesome-claude-agents/issues)
-- [Share ideas](https://github.com/ps-prabhjyotsingh/awesome-claude-agents/discussions)
-- [Success stories](https://github.com/ps-prabhjyotsingh/awesome-claude-agents/discussions/categories/show-and-tell)
+- [Report issues](https://github.com/ps-prabhjyotsingh/WebAgencyAgents/issues)
+- [Share ideas](https://github.com/ps-prabhjyotsingh/WebAgencyAgents/discussions)
 
 ## License
 
 MIT License - Use freely in your projects.
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=ps-prabhjyotsingh/awesome-claude-agents&type=Date)](https://www.star-history.com/#ps-prabhjyotsingh/awesome-claude-agents&Date)
