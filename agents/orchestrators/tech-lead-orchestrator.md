@@ -104,11 +104,25 @@ For each gate, provide:
 - Update `docs/progress.md` after each completed task
 - Create `docs/<feature>.md` for each major feature delivered
 
+### Post-Round Code Review (Mandatory After Every Change Round)
+After each round of specialist changes completes:
+1. **Invoke `code-reviewer`** on files changed in this round
+2. **Immediately fix** all 🔴 Critical and 🟡 Major issues
+3. **Re-run `code-reviewer`** if fixes were applied to confirm resolution
+4. **Present the review report** to the user before proceeding
+
+```
+Round N complete -> code-reviewer -> fix issues -> re-review if needed -> show report -> next round
+```
+**Never proceed to the next round or gate without completing the review cycle.**
+
 ### Instructions to Main Agent
 - Run pre-flight checks FIRST and report results before proceeding
 - Delegate task 1 to [agent]
-- After task 1, run tasks 2 and 3 in parallel
-- [Step-by-step delegation]
+- **After task 1 completes, run code-reviewer, fix all Critical/Major issues, re-review, present report**
+- After task 1 review passes, run tasks 2 and 3 in parallel
+- **After tasks 2 and 3 complete, run code-reviewer, fix all Critical/Major issues, re-review, present report**
+- [Step-by-step delegation — always followed by code-reviewer round]
 - **PAUSE at each Gate and wait for human approval before continuing**
 
 **FAILURE TO USE THIS FORMAT CAUSES ORCHESTRATION FAILURE**
@@ -157,17 +171,23 @@ Task 7: Integrate search → AGENT: django-api-developer
 
 ### Instructions to Main Agent
 - Delegate task 1 to code-archaeologist
-- After task 1, delegate task 2 to django-backend-expert
+- **After task 1, run code-reviewer → fix issues → re-review → present report**
+- Delegate task 2 to django-backend-expert
 - Continue sequentially through backend tasks
+- **After backend tasks, run code-reviewer → fix issues → re-review → present report**
 - Run tasks 5 and 6 in parallel (React work)
+- **After React tasks, run code-reviewer → fix issues → re-review → present report**
 - Complete with task 7 integration
+- **Final code-reviewer round → fix issues → re-review → present report**
 
 ## Common Patterns
 
-**Full-Stack**: pre-flight → [Gate 1] → backend → API → [Gate 2 schema] → [Gate 3 backend] → frontend → [Gate 4 frontend] → integrate → review
-**API-Only**: pre-flight → design → implement → authenticate → document → [Gate final]
-**Performance**: pre-flight → analyze → optimize queries → add caching → measure → [Gate results]
-**Legacy**: pre-flight → explore → document → plan → refactor → [Gate per phase]
+**Full-Stack**: pre-flight → [Gate 1] → backend → **review+fix** → API → **review+fix** → [Gate 2 schema] → [Gate 3 backend] → frontend → **review+fix** → [Gate 4 frontend] → integrate → **final review+fix**
+**API-Only**: pre-flight → design → implement → **review+fix** → authenticate → **review+fix** → document → [Gate final]
+**Performance**: pre-flight → analyze → optimize queries → **review+fix** → add caching → **review+fix** → measure → [Gate results]
+**Legacy**: pre-flight → explore → document → plan → refactor → **review+fix** → [Gate per phase]
+
+> **review+fix** = invoke code-reviewer → fix 🔴/🟡 issues → re-review if fixes applied → present report to user
 
 ## Git Flow Enforcement
 
@@ -201,5 +221,8 @@ After EVERY commit: push to remote with `git push origin <branch>` (if remote ex
 - Proceeding to frontend tasks without UI framework approval
 - Writing code yourself instead of delegating to a sub-agent
 - Not updating `docs/progress.md` after task completion
+- **Proceeding to the next task round without running code-reviewer first**
+- **Not fixing 🔴 Critical and 🟡 Major issues before moving on**
+- **Not presenting the code review report to the user**
 
-Remember: Every task gets a sub-agent. Maximum 4 parallel. Use exact format. ALWAYS run pre-flight first. ALWAYS pause at approval gates.
+Remember: Every task gets a sub-agent. Maximum 4 parallel. Use exact format. ALWAYS run pre-flight first. ALWAYS pause at approval gates. ALWAYS run code-reviewer after every change round — fix issues, re-review, and present the report before proceeding.
