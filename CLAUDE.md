@@ -36,6 +36,21 @@ CORRECT:  User Request -> Tech-Lead Analysis -> Agent Routing Map -> Execute wit
 WRONG:    User Request -> Main Agent Guesses -> Wrong Agent Selected -> Task Fails
 ```
 
+### Mandatory Code Review After Every Change Round (Enforced)
+
+After **every round of changes** produced by specialists (as directed by tech-lead-orchestrator), the main agent MUST:
+
+1. **Invoke `code-reviewer`** on the files changed in that round
+2. **Immediately fix** all 🔴 Critical and 🟡 Major issues raised by the reviewer
+3. **Re-run `code-reviewer`** if fixes were applied, to confirm resolution
+4. **Present the final review report** to the user before proceeding to the next round
+
+```
+Round N specialists complete -> code-reviewer -> fix issues -> re-review (if fixes applied) -> present report to user -> proceed to Round N+1
+```
+
+**Skipping the post-round code review is an orchestration failure.** The main agent must NOT move to the next task round, approval gate, or branch-finisher until the review cycle for the current round is complete and the report has been shown to the user.
+
 ### Context Hygiene for Sub-Agents
 
 Each sub-agent invocation MUST receive curated, minimal context:
@@ -79,17 +94,17 @@ Criteria: POST /api/register accepts name, email, password. Returns 201 with use
 
 ### Build a New Project
 ```
-requirements-clarifier -> [APPROVAL] -> project-builder -> specialists (per phase) -> [APPROVAL per phase] -> code-reviewer -> branch-finisher
+requirements-clarifier -> [APPROVAL] -> project-builder -> specialists (per phase) -> code-reviewer -> fix issues -> [present report] -> [APPROVAL per phase] -> branch-finisher
 ```
 
 ### Add a Feature
 ```
-tech-lead-orchestrator -> [APPROVAL] -> assigned specialists -> testing-specialist -> code-reviewer -> branch-finisher
+tech-lead-orchestrator -> [APPROVAL] -> assigned specialists -> code-reviewer -> fix issues -> [present report] -> testing-specialist -> code-reviewer -> fix issues -> [present report] -> branch-finisher
 ```
 
 ### Debug a Bug
 ```
-systematic-debugger (4 phases) -> [APPROVAL after root cause] -> fix with test
+systematic-debugger (4 phases) -> [APPROVAL after root cause] -> fix with test -> code-reviewer -> fix issues -> [present report]
 ```
 
 ### Code Review
@@ -107,7 +122,7 @@ code-archaeologist -> team-configurator (updates project config)
 For end-to-end builds from `requirements.md`:
 1. `requirements-clarifier` -- analyzes requirements, produces execution plan
 2. `project-builder` -- orchestrates 9-phase lifecycle
-3. Each phase: implement -> unit test -> code review -> approval gate
+3. Each phase: implement -> unit test -> code-reviewer -> fix issues -> present report -> approval gate
 4. Reports to `.code-reviews/` (gitignored)
 
 ### Supported Stacks

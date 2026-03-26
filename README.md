@@ -99,7 +99,7 @@ Paste agent content as a system prompt, custom instruction, or rules file wherev
 
 ### Scenario 1: Build a New Project from Requirements
 
-**Pipeline:** `requirements-clarifier` -> `project-builder` -> specialists -> `code-reviewer`
+**Pipeline:** `requirements-clarifier` -> `project-builder` -> specialists -> `code-reviewer` -> fix issues -> present report (per phase)
 
 | Step | Action | Agent Used |
 |------|--------|------------|
@@ -108,6 +108,8 @@ Paste agent content as a system prompt, custom instruction, or rules file wherev
 | 3 | Review and approve the execution plan | You (approval gate) |
 | 4 | "Build this project following the approved plan" | `project-builder` |
 | 5 | Project-builder delegates to specialists per phase | Auto-routed |
+| 5a | **Code review after each phase** — fix all Critical/Major issues | `code-reviewer` (enforced) |
+| 5b | **Review report presented to you** | Auto |
 | 6 | Approve each phase (schema, backend, frontend, tests) | You (approval gates) |
 | 7 | Final code review | `code-reviewer` |
 
@@ -128,7 +130,7 @@ Then build the project using the project-builder phased approach.
 
 ### Scenario 2: Add a Feature to an Existing Project
 
-**Pipeline:** `tech-lead-orchestrator` -> specialists -> `testing-specialist` -> `code-reviewer`
+**Pipeline:** `tech-lead-orchestrator` -> specialists -> `code-reviewer` -> fix issues -> present report (per round) -> `testing-specialist` -> `code-reviewer` -> `branch-finisher`
 
 | Step | Action | Agent Used |
 |------|--------|------------|
@@ -136,9 +138,12 @@ Then build the project using the project-builder phased approach.
 | 2 | "Analyze this feature request and create a task plan" | `tech-lead-orchestrator` |
 | 3 | Review the agent routing map and task assignments | You (approval gate) |
 | 4 | Execute tasks in the order specified by tech-lead | Assigned specialists |
+| 4a | **Code review after each round** — fix all Critical/Major issues | `code-reviewer` (enforced) |
+| 4b | **Review report presented to you** | Auto |
 | 5 | Run tests for the feature | `testing-specialist` |
-| 6 | Review the implementation | `code-reviewer` |
-| 7 | Finish the branch | `branch-finisher` |
+| 5a | **Code review after tests** — fix all Critical/Major issues | `code-reviewer` (enforced) |
+| 5b | **Review report presented to you** | Auto |
+| 6 | Finish the branch | `branch-finisher` |
 
 **Example invocation:**
 ```
@@ -149,7 +154,7 @@ claude "use @agent-tech-lead-orchestrator to plan adding a user authentication s
 
 ### Scenario 3: Debug a Bug
 
-**Pipeline:** `systematic-debugger` (4-phase process)
+**Pipeline:** `systematic-debugger` -> fix with test -> `code-reviewer` -> fix issues -> present report
 
 | Step | Action | Agent Used |
 |------|--------|------------|
@@ -158,6 +163,8 @@ claude "use @agent-tech-lead-orchestrator to plan adding a user authentication s
 | 3 | Agent investigates (Phase 1-3: gather evidence, analyze patterns, form hypothesis) | `systematic-debugger` |
 | 4 | Review root cause analysis and proposed fix | You (approval gate) |
 | 5 | Agent implements the fix with a failing test first | `systematic-debugger` |
+| 6 | **Code review of the fix** — fix all Critical/Major issues | `code-reviewer` (enforced) |
+| 7 | **Review report presented to you** | Auto |
 
 **Example invocation:**
 ```
